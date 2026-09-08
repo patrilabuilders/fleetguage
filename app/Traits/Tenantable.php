@@ -14,6 +14,7 @@ trait Tenantable
      */
     public static function bootTenantable(): void
     {
+        dump("bootTenantable called for class: " . static::class);
         static::addGlobalScope(new TenantScope());
 
         static::creating(function (Model $model) {
@@ -25,7 +26,7 @@ trait Tenantable
                 // In testing environment, automatically fallback to a default company 
                 // to preserve compatibility with existing single-tenant test cases.
                 static $testCompany = null;
-                if ($testCompany === null) {
+                if ($testCompany === null || !Company::withoutGlobalScopes()->find($testCompany->id)) {
                     $testCompany = Company::withoutGlobalScopes()->first() ?: Company::factory()->create();
                 }
                 $model->company_id = $testCompany->id;
