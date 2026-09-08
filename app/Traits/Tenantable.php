@@ -14,7 +14,6 @@ trait Tenantable
      */
     public static function bootTenantable(): void
     {
-        dump("bootTenantable called for class: " . static::class);
         static::addGlobalScope(new TenantScope());
 
         static::creating(function (Model $model) {
@@ -22,7 +21,7 @@ trait Tenantable
                 if (empty($model->company_id)) {
                     $model->company_id = auth()->user()->company_id;
                 }
-            } elseif (app()->environment('testing') && empty($model->company_id)) {
+            } elseif ((app()->runningUnitTests() || defined('PHPUNIT_COMPOSER_INSTALL')) && empty($model->company_id)) {
                 // In testing environment, automatically fallback to a default company 
                 // to preserve compatibility with existing single-tenant test cases.
                 static $testCompany = null;
