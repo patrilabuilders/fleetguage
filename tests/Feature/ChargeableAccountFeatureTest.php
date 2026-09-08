@@ -259,7 +259,13 @@ class ChargeableAccountFeatureTest extends TestCase
     public function test_chargeable_account_print_route_renders_correctly(): void
     {
         $user = User::factory()->create(['role' => 'administrator']);
-        $account = ChargeableAccount::create(['name' => 'Print Test Account', 'status' => 'Active', 'classification' => 'Running']);
+        $this->actingAs($user);
+
+        $account = ChargeableAccount::create([
+            'name' => 'Print Test Account',
+            'status' => 'Active',
+            'classification' => 'Running'
+        ]);
 
         $subAccount = $account->subAccounts()->create(['name' => 'Sub Printable']);
 
@@ -282,7 +288,7 @@ class ChargeableAccountFeatureTest extends TestCase
         $response->assertSee('Sub Printable');
         $response->assertSee('1,250.00 L');
         $response->assertSee('350.50 L');
-        $response->assertSee('Sub-Account Budget Breakdown');
+        $response->assertSee('Sub-Account Breakdown');
         $response->assertSee('Print Date');
         $response->assertSee(now()->format('M d, Y'));
         $response->assertDontSee('Account Information');

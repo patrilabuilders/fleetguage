@@ -16,6 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'role' => RoleMiddleware::class,
             'check_temp_password' => CheckTemporaryPassword::class,
+            'feature' => \App\Http\Middleware\EnsureFeatureAccess::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

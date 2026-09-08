@@ -7,6 +7,7 @@ use App\Livewire\CreateFuelOrder;
 use App\Models\Asset;
 use App\Models\AssetType;
 use App\Models\ChargeableAccount;
+use App\Models\Company;
 use App\Models\FuelOrder;
 use App\Models\SubAccount;
 use App\Models\SubAccountBudget;
@@ -590,12 +591,18 @@ class FuelOrderFeatureTest extends TestCase
     public function test_only_administrator_can_approve_waiver()
     {
         $this->withoutMiddleware(ValidateCsrfToken::class);
-        $user = User::factory()->create(['role' => 'data_logger']);
-        $admin = User::factory()->create(['role' => 'administrator']);
-        $account = ChargeableAccount::create(['name' => 'Project Alpha', 'status' => 'Active']);
-        $subAccount = $account->subAccounts()->create(['name' => 'Sub Alpha']);
+        $company = Company::factory()->create();
+        $user = User::factory()->create(['company_id' => $company->id, 'role' => 'data_logger']);
+        $admin = User::factory()->create(['company_id' => $company->id, 'role' => 'administrator']);
+        $account = ChargeableAccount::create([
+            'company_id' => $company->id,
+            'name' => 'Project Alpha',
+            'status' => 'Active'
+        ]);
+        $subAccount = $account->subAccounts()->create(['company_id' => $company->id, 'name' => 'Sub Alpha']);
 
         $fuelOrder = FuelOrder::create([
+            'company_id' => $company->id,
             'asset_id' => null,
             'chargeable_account_id' => $account->id,
             'sub_account_id' => $subAccount->id,
@@ -1203,14 +1210,16 @@ class FuelOrderFeatureTest extends TestCase
     public function test_administrator_and_moderator_can_unlink_sub_account_row()
     {
         $this->withoutMiddleware(ValidateCsrfToken::class);
-        $admin = User::factory()->create(['role' => 'administrator']);
-        $moderator = User::factory()->create(['role' => 'moderator']);
-        $standardUser = User::factory()->create(['role' => 'data_logger']);
+        $company = Company::factory()->create();
+        $admin = User::factory()->create(['company_id' => $company->id, 'role' => 'administrator']);
+        $moderator = User::factory()->create(['company_id' => $company->id, 'role' => 'moderator']);
+        $standardUser = User::factory()->create(['company_id' => $company->id, 'role' => 'data_logger']);
 
-        $type = AssetType::create(['name' => 'Vehicle']);
-        $account = ChargeableAccount::create(['name' => 'General Overhead', 'status' => 'Active']);
-        $sub = $account->subAccounts()->create(['name' => 'Sub One']);
+        $type = AssetType::create(['company_id' => $company->id, 'name' => 'Vehicle']);
+        $account = ChargeableAccount::create(['company_id' => $company->id, 'name' => 'General Overhead', 'status' => 'Active']);
+        $sub = $account->subAccounts()->create(['company_id' => $company->id, 'name' => 'Sub One']);
         $asset = Asset::create([
+            'company_id' => $company->id,
             'fleet_no' => 'V-101',
             'asset_type_id' => $type->id,
             'fuel_factor_km' => 2.5,
@@ -1219,6 +1228,7 @@ class FuelOrderFeatureTest extends TestCase
         ]);
 
         $fuelOrder = FuelOrder::create([
+            'company_id' => $company->id,
             'asset_id' => $asset->id,
             'chargeable_account_id' => $account->id,
             'sub_account_id' => $sub->id,

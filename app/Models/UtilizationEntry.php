@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\Tenantable;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -10,9 +11,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class UtilizationEntry extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, Tenantable;
 
     protected $fillable = [
+        'company_id',
         'asset_id',
         'date',
         'start_time',

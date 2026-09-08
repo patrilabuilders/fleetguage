@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Company;
 use App\Models\User;
 use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -89,8 +90,9 @@ class UserManagementTest extends TestCase
     public function test_administrator_can_update_user_role()
     {
         $this->withoutMiddleware([ValidateCsrfToken::class]);
-        $admin = User::factory()->create(['role' => 'administrator']);
-        $user = User::factory()->create(['role' => 'data_logger']);
+        $company = Company::factory()->create();
+        $admin = User::factory()->create(['company_id' => $company->id, 'role' => 'administrator']);
+        $user = User::factory()->create(['company_id' => $company->id, 'role' => 'data_logger']);
 
         $response = $this->actingAs($admin)->patch(route('users.update', $user), [
             'name' => 'Updated Name',
@@ -105,8 +107,9 @@ class UserManagementTest extends TestCase
     public function test_moderator_cannot_update_user_role()
     {
         $this->withoutMiddleware([ValidateCsrfToken::class]);
-        $moderator = User::factory()->create(['role' => 'moderator']);
-        $user = User::factory()->create(['role' => 'data_logger']);
+        $company = Company::factory()->create();
+        $moderator = User::factory()->create(['company_id' => $company->id, 'role' => 'moderator']);
+        $user = User::factory()->create(['company_id' => $company->id, 'role' => 'data_logger']);
 
         $response = $this->actingAs($moderator)->patch(route('users.update', $user), [
             'name' => 'Updated Name',

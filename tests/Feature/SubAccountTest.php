@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Asset;
 use App\Models\AssetType;
 use App\Models\ChargeableAccount;
+use App\Models\Company;
 use App\Models\FuelOrder;
 use App\Models\SubAccount;
 use App\Models\SubAccountBudget;
@@ -497,10 +498,16 @@ class SubAccountTest extends TestCase
     public function test_authorized_user_can_log_and_delete_accomplishments(): void
     {
         $this->withoutMiddleware([ValidateCsrfToken::class]);
-        $admin = User::factory()->create(['role' => 'administrator']);
-        $moderator = User::factory()->create(['role' => 'moderator']);
-        $account = ChargeableAccount::create(['name' => 'Main Account', 'status' => 'Active']);
+        $company = Company::factory()->create();
+        $admin = User::factory()->create(['company_id' => $company->id, 'role' => 'administrator']);
+        $moderator = User::factory()->create(['company_id' => $company->id, 'role' => 'moderator']);
+        $account = ChargeableAccount::create([
+            'company_id' => $company->id,
+            'name' => 'Main Account',
+            'status' => 'Active'
+        ]);
         $subAccount = $account->subAccounts()->create([
+            'company_id' => $company->id,
             'name' => 'Sub Account A',
             'quantity' => 100.00,
             'unit' => 'meters',

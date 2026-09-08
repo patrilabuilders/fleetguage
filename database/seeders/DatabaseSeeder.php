@@ -2,7 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\Admin;
 use App\Models\AssetType;
+use App\Models\Company;
+use App\Models\SubscriptionTier;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -14,20 +17,43 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Initial Administrator
+        // 1. Create Subscription Tiers
+        $standard = SubscriptionTier::create([
+            'name' => 'Standard',
+            'max_users' => 5,
+            'max_assets' => 10,
+            'features' => ['reports' => false],
+        ]);
+
+        $enterprise = SubscriptionTier::create([
+            'name' => 'Enterprise',
+            'max_users' => 100,
+            'max_assets' => 1000,
+            'features' => ['reports' => true],
+        ]);
+
+        // 3. Create a Default/Acme Company
+        $company = Company::create([
+            'name' => 'Acme Fuel Corp',
+            'subscription_tier_id' => $enterprise->id,
+            'status' => 'active',
+        ]);
+
+        // 4. Create Initial Administrator associated with the default Company
         User::create([
-            'name' => 'Administrator',
+            'company_id' => $company->id,
+            'name' => 'Company Administrator',
             'email' => 'admin@fuel.com',
             'password' => Hash::make('password'),
             'role' => 'administrator',
             'is_temporary_password' => false,
         ]);
 
-        // Sample Asset Types
-        AssetType::create(['name' => 'Sedan']);
-        AssetType::create(['name' => 'SUV']);
-        AssetType::create(['name' => 'Truck']);
-        AssetType::create(['name' => 'Van']);
-        AssetType::create(['name' => 'Excavator']);
+        // 5. Sample Asset Types associated with the default Company
+        AssetType::create(['company_id' => $company->id, 'name' => 'Sedan']);
+        AssetType::create(['company_id' => $company->id, 'name' => 'SUV']);
+        AssetType::create(['company_id' => $company->id, 'name' => 'Truck']);
+        AssetType::create(['company_id' => $company->id, 'name' => 'Van']);
+        AssetType::create(['company_id' => $company->id, 'name' => 'Excavator']);
     }
 }

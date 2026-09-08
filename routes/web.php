@@ -12,9 +12,27 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\SubAccountBudgetController;
 use App\Http\Controllers\SubAccountController;
+use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UtilizationEntryController;
 use Illuminate\Support\Facades\Route;
+
+// Super Admin Routes
+Route::prefix('super-admin')->group(function () {
+    Route::middleware('guest:admin')->group(function () {
+        Route::get('login', [SuperAdminController::class, 'showLogin'])->name('super-admin.login');
+        Route::post('login', [SuperAdminController::class, 'login']);
+    });
+
+    Route::middleware('auth:admin')->group(function () {
+        Route::post('logout', [SuperAdminController::class, 'logout'])->name('super-admin.logout');
+        Route::get('dashboard', [SuperAdminController::class, 'dashboard'])->name('super-admin.dashboard');
+        Route::post('companies', [SuperAdminController::class, 'storeCompany'])->name('super-admin.companies.store');
+        Route::patch('companies/{company}', [SuperAdminController::class, 'updateCompany'])->name('super-admin.companies.update');
+        Route::post('tiers', [SuperAdminController::class, 'storeTier'])->name('super-admin.tiers.store');
+        Route::patch('tiers/{tier}', [SuperAdminController::class, 'updateTier'])->name('super-admin.tiers.update');
+    });
+});
 
 Route::get('/', function () {
     return view('welcome');
@@ -29,9 +47,11 @@ Route::middleware(['auth', 'check_temp_password'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Reports
-    Route::get('reports/asset-utilization', [ReportController::class, 'assetUtilization'])->name('reports.asset-utilization');
-    Route::get('reports/fuel-orders', [ReportController::class, 'fuelOrdersSummary'])->name('reports.fuel-orders');
-    Route::get('reports/chargeable-accounts', [ReportController::class, 'chargeableAccountSummary'])->name('reports.chargeable-accounts');
+    Route::middleware('feature:reports')->group(function () {
+        Route::get('reports/asset-utilization', [ReportController::class, 'assetUtilization'])->name('reports.asset-utilization');
+        Route::get('reports/fuel-orders', [ReportController::class, 'fuelOrdersSummary'])->name('reports.fuel-orders');
+        Route::get('reports/chargeable-accounts', [ReportController::class, 'chargeableAccountSummary'])->name('reports.chargeable-accounts');
+    });
     Route::get('dashboard/account/{chargeable_account}/sub-accounts', [ReportController::class, 'subAccountDashboard'])->name('dashboard.sub-accounts');
 
     // Shared Dashboard Management
