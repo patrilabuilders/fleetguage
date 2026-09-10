@@ -223,6 +223,10 @@
                                             </div>
                                             <div class="modal-body">
                                                 <div class="mb-3">
+                                                    <label class="form-label">Tier Name</label>
+                                                    <input type="text" class="form-control bg-secondary bg-opacity-25 text-light border-secondary" name="name" value="{{ $tier->name }}" required placeholder="e.g. Professional">
+                                                </div>
+                                                <div class="mb-3">
                                                     <label class="form-label">Price ($ / month)</label>
                                                     <div class="input-group">
                                                         <input type="number" step="0.01" class="form-control bg-secondary bg-opacity-25 text-light border-secondary" name="price" id="edit_price_{{ $tier->id }}" value="{{ $tier->price }}" @if($tier->price === 0.0 || $tier->price === 0) disabled @else required min="0" @endif placeholder="e.g. 49.00">
@@ -235,6 +239,10 @@
                                                 <div class="mb-3">
                                                     <label class="form-label">Description</label>
                                                     <textarea class="form-control bg-secondary bg-opacity-25 text-light border-secondary" name="description" rows="2" placeholder="Describe this tier's key value proposition...">{{ $tier->description }}</textarea>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Badge Text (on pricing card)</label>
+                                                    <input type="text" class="form-control bg-secondary bg-opacity-25 text-light border-secondary" name="badge_text" value="{{ $tier->badge_text }}" placeholder="e.g. SME Essential">
                                                 </div>
                                                 <div class="mb-3">
                                                     <label class="form-label">Max Users</label>
@@ -386,6 +394,10 @@
                         <div class="mb-3">
                             <label class="form-label">Description</label>
                             <textarea class="form-control bg-secondary bg-opacity-25 text-light border-secondary" name="description" rows="2" placeholder="Describe this tier's key value proposition..."></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Badge Text (on pricing card)</label>
+                            <input type="text" class="form-control bg-secondary bg-opacity-25 text-light border-secondary" name="badge_text" placeholder="e.g. Popular">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Max Users</label>

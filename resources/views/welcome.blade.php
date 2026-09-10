@@ -377,7 +377,7 @@
                             
                             $priceText = $priceVal == 0 ? 'Free' : '$' . number_format($priceVal, 0);
                             
-                            $subTitle = match(strtolower($tier->name)) {
+                            $subTitle = $tier->badge_text ?: match(strtolower($tier->name)) {
                                 'standard' => 'SME Essential',
                                 'enterprise' => 'Popular',
                                 default => 'Custom Tier',

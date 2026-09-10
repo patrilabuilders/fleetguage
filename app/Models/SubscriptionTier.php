@@ -14,6 +14,7 @@ class SubscriptionTier extends Model
         'name',
         'price',
         'description',
+        'badge_text',
         'max_users',
         'max_assets',
         'max_classifications',
