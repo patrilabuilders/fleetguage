@@ -597,7 +597,7 @@ class FuelOrderFeatureTest extends TestCase
         $account = ChargeableAccount::create([
             'company_id' => $company->id,
             'name' => 'Project Alpha',
-            'status' => 'Active'
+            'status' => 'Active',
         ]);
         $subAccount = $account->subAccounts()->create(['company_id' => $company->id, 'name' => 'Sub Alpha']);
 

@@ -504,7 +504,7 @@ class SubAccountTest extends TestCase
         $account = ChargeableAccount::create([
             'company_id' => $company->id,
             'name' => 'Main Account',
-            'status' => 'Active'
+            'status' => 'Active',
         ]);
         $subAccount = $account->subAccounts()->create([
             'company_id' => $company->id,

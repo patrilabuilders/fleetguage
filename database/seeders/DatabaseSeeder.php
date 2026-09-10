@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\Admin;
 use App\Models\AssetType;
 use App\Models\Company;
 use App\Models\SubscriptionTier;
@@ -22,6 +21,9 @@ class DatabaseSeeder extends Seeder
             'name' => 'Standard',
             'max_users' => 5,
             'max_assets' => 10,
+            'max_classifications' => 5,
+            'max_accounts' => 10,
+            'max_sub_accounts_per_account' => 10,
             'features' => ['reports' => false],
         ]);
 
@@ -29,6 +31,9 @@ class DatabaseSeeder extends Seeder
             'name' => 'Enterprise',
             'max_users' => 100,
             'max_assets' => 1000,
+            'max_classifications' => 100,
+            'max_accounts' => 200,
+            'max_sub_accounts_per_account' => 500,
             'features' => ['reports' => true],
         ]);
 

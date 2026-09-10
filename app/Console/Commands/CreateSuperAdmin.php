@@ -34,12 +34,13 @@ class CreateSuperAdmin extends Command
         $name = $this->ask('Enter Super Admin Name');
         if (empty($name)) {
             $this->error('Name is required.');
+
             return self::FAILURE;
         }
 
         // 2. Prompt for Email
         $email = $this->ask('Enter Super Admin Email Address');
-        
+
         // Validate Email
         $validator = Validator::make(['email' => $email], [
             'email' => 'required|email|unique:admins,email',
@@ -49,6 +50,7 @@ class CreateSuperAdmin extends Command
             foreach ($validator->errors()->all() as $error) {
                 $this->error($error);
             }
+
             return self::FAILURE;
         }
 
@@ -58,6 +60,7 @@ class CreateSuperAdmin extends Command
 
         if ($password !== $passwordConfirm) {
             $this->error('Passwords do not match.');
+
             return self::FAILURE;
         }
 
@@ -70,6 +73,7 @@ class CreateSuperAdmin extends Command
             foreach ($validatorPassword->errors()->all() as $error) {
                 $this->error($error);
             }
+
             return self::FAILURE;
         }
 
@@ -81,6 +85,7 @@ class CreateSuperAdmin extends Command
         ]);
 
         $this->info("Super Admin account for {$name} ({$email}) was created successfully!");
+
         return self::SUCCESS;
     }
 }

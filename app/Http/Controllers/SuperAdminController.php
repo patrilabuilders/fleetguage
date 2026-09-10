@@ -35,6 +35,7 @@ class SuperAdminController extends Controller
 
         if (Auth::guard('admin')->attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
+
             return redirect()->intended(route('super-admin.dashboard'));
         }
 
@@ -51,6 +52,7 @@ class SuperAdminController extends Controller
         Auth::guard('admin')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
         return redirect()->route('super-admin.login');
     }
 
@@ -122,6 +124,9 @@ class SuperAdminController extends Controller
             'name' => 'required|string|max:255|unique:subscription_tiers,name',
             'max_users' => 'required|integer|min:1',
             'max_assets' => 'required|integer|min:1',
+            'max_classifications' => 'required|integer|min:1',
+            'max_accounts' => 'required|integer|min:1',
+            'max_sub_accounts_per_account' => 'required|integer|min:1',
             'reports_enabled' => 'nullable|boolean',
         ]);
 
@@ -129,8 +134,11 @@ class SuperAdminController extends Controller
             'name' => $validated['name'],
             'max_users' => $validated['max_users'],
             'max_assets' => $validated['max_assets'],
+            'max_classifications' => $validated['max_classifications'],
+            'max_accounts' => $validated['max_accounts'],
+            'max_sub_accounts_per_account' => $validated['max_sub_accounts_per_account'],
             'features' => [
-                'reports' => !empty($validated['reports_enabled']),
+                'reports' => ! empty($validated['reports_enabled']),
             ],
         ]);
 
@@ -145,14 +153,20 @@ class SuperAdminController extends Controller
         $validated = $request->validate([
             'max_users' => 'required|integer|min:1',
             'max_assets' => 'required|integer|min:1',
+            'max_classifications' => 'required|integer|min:1',
+            'max_accounts' => 'required|integer|min:1',
+            'max_sub_accounts_per_account' => 'required|integer|min:1',
             'reports_enabled' => 'nullable|boolean',
         ]);
 
         $tier->update([
             'max_users' => $validated['max_users'],
             'max_assets' => $validated['max_assets'],
+            'max_classifications' => $validated['max_classifications'],
+            'max_accounts' => $validated['max_accounts'],
+            'max_sub_accounts_per_account' => $validated['max_sub_accounts_per_account'],
             'features' => [
-                'reports' => !empty($validated['reports_enabled']),
+                'reports' => ! empty($validated['reports_enabled']),
             ],
         ]);
 

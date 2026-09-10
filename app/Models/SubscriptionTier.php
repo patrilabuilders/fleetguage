@@ -14,6 +14,9 @@ class SubscriptionTier extends Model
         'name',
         'max_users',
         'max_assets',
+        'max_classifications',
+        'max_accounts',
+        'max_sub_accounts_per_account',
         'features',
     ];
 
@@ -28,6 +31,9 @@ class SubscriptionTier extends Model
             'features' => 'array',
             'max_users' => 'integer',
             'max_assets' => 'integer',
+            'max_classifications' => 'integer',
+            'max_accounts' => 'integer',
+            'max_sub_accounts_per_account' => 'integer',
         ];
     }
 

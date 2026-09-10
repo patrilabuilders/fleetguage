@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Models\Asset;
+use App\Models\Company;
 use Illuminate\Validation\ValidationException;
 
 class AssetObserver
@@ -15,7 +16,7 @@ class AssetObserver
         $companyId = $asset->company_id ?: (auth()->check() ? auth()->user()->company_id : null);
 
         if ($companyId) {
-            $company = \App\Models\Company::with('subscriptionTier')->find($companyId);
+            $company = Company::with('subscriptionTier')->find($companyId);
             if ($company && $company->subscriptionTier) {
                 $maxAssets = $company->subscriptionTier->max_assets;
                 $currentAssetsCount = Asset::withoutGlobalScopes()->where('company_id', $companyId)->count();

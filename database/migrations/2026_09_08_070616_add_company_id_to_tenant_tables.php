@@ -25,7 +25,7 @@ return new class extends Migration
         ];
 
         foreach ($tables as $tableName) {
-            Schema::table($tableName, function (Blueprint $table) use ($tableName) {
+            Schema::table($tableName, function (Blueprint $table) {
                 // If it is the users table, we make company_id nullable because of potential system users,
                 // but for general multi-tenancy we can constrain it.
                 $table->foreignId('company_id')->constrained('companies')->cascadeOnDelete();
@@ -53,7 +53,7 @@ return new class extends Migration
 
         foreach ($tables as $tableName) {
             Schema::table($tableName, function (Blueprint $table) use ($tableName) {
-                $table->dropForeign([$tableName . '_company_id_foreign']);
+                $table->dropForeign([$tableName.'_company_id_foreign']);
                 $table->dropColumn('company_id');
             });
         }

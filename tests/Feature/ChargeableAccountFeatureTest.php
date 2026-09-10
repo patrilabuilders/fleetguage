@@ -264,7 +264,7 @@ class ChargeableAccountFeatureTest extends TestCase
         $account = ChargeableAccount::create([
             'name' => 'Print Test Account',
             'status' => 'Active',
-            'classification' => 'Running'
+            'classification' => 'Running',
         ]);
 
         $subAccount = $account->subAccounts()->create(['name' => 'Sub Printable']);

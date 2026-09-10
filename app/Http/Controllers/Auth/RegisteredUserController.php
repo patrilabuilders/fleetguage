@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\AssetType;
+use App\Models\Company;
+use App\Models\SubscriptionTier;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -20,23 +23,30 @@ class RegisteredUserController extends Controller
      */
     public function create(): View
     {
-        $tiers = \App\Models\SubscriptionTier::all();
+        $tiers = SubscriptionTier::all();
         if ($tiers->isEmpty()) {
             // Seed defaults dynamically to avoid blank form
-            \App\Models\SubscriptionTier::create([
+            SubscriptionTier::create([
                 'name' => 'Standard',
                 'max_users' => 5,
                 'max_assets' => 10,
+                'max_classifications' => 5,
+                'max_accounts' => 10,
+                'max_sub_accounts_per_account' => 10,
                 'features' => ['reports' => false],
             ]);
-            \App\Models\SubscriptionTier::create([
+            SubscriptionTier::create([
                 'name' => 'Enterprise',
                 'max_users' => 100,
                 'max_assets' => 1000,
+                'max_classifications' => 100,
+                'max_accounts' => 200,
+                'max_sub_accounts_per_account' => 500,
                 'features' => ['reports' => true],
             ]);
-            $tiers = \App\Models\SubscriptionTier::all();
+            $tiers = SubscriptionTier::all();
         }
+
         return view('auth.register', compact('tiers'));
     }
 
@@ -56,7 +66,7 @@ class RegisteredUserController extends Controller
         ]);
 
         // Create the Company first
-        $company = \App\Models\Company::create([
+        $company = Company::create([
             'name' => $request->company_name,
             'subscription_tier_id' => $request->subscription_tier_id,
             'status' => 'active',
@@ -65,7 +75,7 @@ class RegisteredUserController extends Controller
         // Seed default AssetTypes for this company to give them an awesome onboarding experience
         $defaultTypes = ['Sedan', 'SUV', 'Truck', 'Van', 'Excavator'];
         foreach ($defaultTypes as $typeName) {
-            \App\Models\AssetType::create([
+            AssetType::create([
                 'company_id' => $company->id,
                 'name' => $typeName,
             ]);

@@ -3,8 +3,9 @@
 namespace Tests\Feature\Auth;
 
 use App\Models\SubscriptionTier;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Models\User;
 use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class RegistrationTest extends TestCase
@@ -49,7 +50,7 @@ class RegistrationTest extends TestCase
         ]);
 
         // Assert user belongs to company and has the role administrator
-        $user = \App\Models\User::where('email', 'test@example.com')->first();
+        $user = User::where('email', 'test@example.com')->first();
         $this->assertNotNull($user);
         $this->assertEquals('administrator', $user->role);
         $this->assertNotNull($user->company_id);
