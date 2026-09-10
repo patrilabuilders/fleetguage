@@ -364,81 +364,76 @@
                 </div>
 
                 <div class="row g-4 justify-content-center">
-                    <div class="col-lg-5 col-md-6">
-                        <div class="pricing-card p-4 p-lg-5 h-100">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h4 class="fw-black text-white mb-0">Standard Plan</h4>
-                                <span class="badge bg-secondary bg-opacity-25 text-light px-3 py-2 rounded-pill small">SME Essential</span>
+                    @foreach($tiers as $tier)
+                        @php
+                            $isEnterprise = str_contains(strtolower($tier->name), 'enterprise');
+                            $price = match(strtolower($tier->name)) {
+                                'standard' => '$49',
+                                'enterprise' => '$299',
+                                default => !empty($tier->features['reports']) ? '$149' : '$79',
+                            };
+                            $subTitle = match(strtolower($tier->name)) {
+                                'standard' => 'SME Essential',
+                                'enterprise' => 'Popular',
+                                default => 'Custom Tier',
+                            };
+                            $desc = match(strtolower($tier->name)) {
+                                'standard' => 'Perfect for regional construction sites or single-depot logistics hubs.',
+                                'enterprise' => 'Complete solution for industrial operations, mining networks, and national shipping fleets.',
+                                default => 'Tailored features to match your exact business requirements.',
+                            };
+                        @endphp
+                        <div class="col-lg-5 col-md-6">
+                            <div class="pricing-card h-100 p-4 p-lg-5 {{ $isEnterprise ? 'premium border-primary' : '' }}">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h4 class="fw-black text-white mb-0">{{ $tier->name }} Plan</h4>
+                                    <span class="badge {{ $isEnterprise ? 'bg-primary text-white' : 'bg-secondary bg-opacity-25 text-light' }} px-3 py-2 rounded-pill small">
+                                        {{ $subTitle }}
+                                    </span>
+                                </div>
+                                <p class="text-secondary small mb-4">{{ $desc }}</p>
+                                <h2 class="fw-black text-white mb-4">{{ $price }}<span class="fs-5 text-secondary fw-normal">/month</span></h2>
+                                
+                                <ul class="list-unstyled mb-5 vstack gap-3 text-secondary" style="font-size: 0.9rem;">
+                                    <li class="d-flex align-items-center gap-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#28a745" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                                        <span>Up to <strong>{{ $tier->max_users ?? 'Infinite' }} Active Users</strong></span>
+                                    </li>
+                                    <li class="d-flex align-items-center gap-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#28a745" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                                        <span>Up to <strong>{{ $tier->max_assets ?? 'Infinite' }} Monitored Assets</strong></span>
+                                    </li>
+                                    <li class="d-flex align-items-center gap-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#28a745" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                                        <span>Up to <strong>{{ $tier->max_classifications ?? 'Infinite' }} Classifications</strong></span>
+                                    </li>
+                                    <li class="d-flex align-items-center gap-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#28a745" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                                        <span>Up to <strong>{{ $tier->max_accounts ?? 'Infinite' }} Chargeable Accounts</strong></span>
+                                    </li>
+                                    <li class="d-flex align-items-center gap-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#28a745" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                                        <span>Up to <strong>{{ $tier->max_sub_accounts_per_account ?? 'Infinite' }} Sub-Accounts</strong></span>
+                                    </li>
+                                    @if(!empty($tier->features['reports']))
+                                        <li class="d-flex align-items-center gap-2 text-white fw-bold">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0d6efd" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                                            <span>Full Analytical Reports Enabled</span>
+                                        </li>
+                                    @else
+                                        <li class="text-decoration-line-through text-opacity-50 d-flex align-items-center gap-2">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#dc3545" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x-circle"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+                                            <span>Analytical reporting modules</span>
+                                        </li>
+                                    @endif
+                                </ul>
+
+                                <a href="{{ route('register') }}?tier_id={{ $tier->id }}" class="btn {{ $isEnterprise ? 'btn-primary' : 'btn-outline-light' }} w-100 rounded-pill py-3 fw-bold">
+                                    Select {{ $tier->name }} Plan
+                                </a>
                             </div>
-                            <p class="text-secondary small mb-4">Perfect for regional construction sites or single-depot logistics hubs.</p>
-                            <h2 class="fw-black text-white mb-4">$49<span class="fs-5 text-secondary fw-normal">/month</span></h2>
-                            
-                            <ul class="list-unstyled mb-5 vstack gap-3 text-secondary" style="font-size: 0.9rem;">
-                                <li class="d-flex align-items-center gap-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#28a745" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                                    <span>Up to <strong>5 Active Users</strong></span>
-                                </li>
-                                <li class="d-flex align-items-center gap-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#28a745" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                                    <span>Up to <strong>10 Monitored Assets</strong></span>
-                                </li>
-                                <li class="d-flex align-items-center gap-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#28a745" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                                    <span>Dual KM and Hour loggers</span>
-                                </li>
-                                <li class="d-flex align-items-center gap-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#28a745" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                                    <span>Digital Fuel Order PDF prints</span>
-                                </li>
-                                <li class="text-decoration-line-through text-opacity-50 d-flex align-items-center gap-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#dc3545" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x-circle"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
-                                    <span>Analytical reporting modules</span>
-                                </li>
-                            </ul>
-
-                            <a href="{{ route('register') }}?tier_id=1" class="btn btn-outline-light w-100 rounded-pill py-3 fw-bold">
-                                Select Standard Plan
-                            </a>
                         </div>
-                    </div>
-
-                    <div class="col-lg-5 col-md-6">
-                        <div class="pricing-card premium p-4 p-lg-5 h-100 border-primary">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h4 class="fw-black text-white mb-0">Enterprise Plan</h4>
-                                <span class="badge bg-primary text-white px-3 py-2 rounded-pill small">Popular</span>
-                            </div>
-                            <p class="text-secondary small mb-4">Complete solution for industrial operations, mining networks, and national shipping fleets.</p>
-                            <h2 class="fw-black text-white mb-4">$299<span class="fs-5 text-secondary fw-normal">/month</span></h2>
-                            
-                            <ul class="list-unstyled mb-5 vstack gap-3 text-secondary" style="font-size: 0.9rem;">
-                                <li class="d-flex align-items-center gap-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#28a745" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                                    <span>Up to <strong>100 Active Users</strong></span>
-                                </li>
-                                <li class="d-flex align-items-center gap-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#28a745" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                                    <span>Up to <strong>1,000 Monitored Assets</strong></span>
-                                </li>
-                                <li class="d-flex align-items-center gap-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#28a745" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                                    <span>Dual KM and Hour loggers</span>
-                                </li>
-                                <li class="d-flex align-items-center gap-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#28a745" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                                    <span>Digital Fuel Order PDF prints</span>
-                                </li>
-                                <li class="d-flex align-items-center gap-2 text-white fw-bold">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0d6efd" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                                    <span>Full Analytical Reports Enabled</span>
-                                </li>
-                            </ul>
-
-                            <a href="{{ route('register') }}?tier_id=2" class="btn btn-primary w-100 rounded-pill py-3 fw-bold">
-                                Select Enterprise Plan
-                            </a>
-                        </div>
-                    </div>
+                    @endforeach
                 </div>
             </div>
         </section>

@@ -185,11 +185,11 @@
                                         </button>
                                     </div>
                                     <div class="row text-secondary g-2" style="font-size: 0.9rem;">
-                                        <div class="col-6">Max Users: <strong class="text-light">{{ $tier->max_users }}</strong></div>
-                                        <div class="col-6">Max Assets: <strong class="text-light">{{ $tier->max_assets }}</strong></div>
-                                        <div class="col-6">Max Classifications: <strong class="text-light">{{ $tier->max_classifications ?? 5 }}</strong></div>
-                                        <div class="col-6">Max Accounts: <strong class="text-light">{{ $tier->max_accounts ?? 10 }}</strong></div>
-                                        <div class="col-12">Max Sub Accounts per Account: <strong class="text-light">{{ $tier->max_sub_accounts_per_account ?? 10 }}</strong></div>
+                                        <div class="col-6">Max Users: <strong class="text-light">{{ $tier->max_users ?? 'Infinite' }}</strong></div>
+                                        <div class="col-6">Max Assets: <strong class="text-light">{{ $tier->max_assets ?? 'Infinite' }}</strong></div>
+                                        <div class="col-6">Max Classifications: <strong class="text-light">{{ $tier->max_classifications ?? 'Infinite' }}</strong></div>
+                                        <div class="col-6">Max Accounts: <strong class="text-light">{{ $tier->max_accounts ?? 'Infinite' }}</strong></div>
+                                        <div class="col-12">Max Sub Accounts per Account: <strong class="text-light">{{ $tier->max_sub_accounts_per_account ?? 'Infinite' }}</strong></div>
                                         <div class="col-12">
                                             Reports: 
                                             @if(!empty($tier->features['reports']))
@@ -216,23 +216,53 @@
                                             <div class="modal-body">
                                                 <div class="mb-3">
                                                     <label class="form-label">Max Users</label>
-                                                    <input type="number" class="form-control bg-secondary bg-opacity-25 text-light border-secondary" name="max_users" value="{{ $tier->max_users }}" required min="1">
+                                                    <div class="input-group">
+                                                        <input type="number" class="form-control bg-secondary bg-opacity-25 text-light border-secondary" name="max_users" id="edit_max_users_{{ $tier->id }}" value="{{ $tier->max_users }}" @if(!is_null($tier->max_users)) required min="1" @else disabled @endif>
+                                                        <div class="input-group-text bg-secondary bg-opacity-25 border-secondary">
+                                                            <input class="form-check-input mt-0 me-1" type="checkbox" name="unlimited_max_users" id="edit_unlimited_max_users_{{ $tier->id }}" value="1" {{ is_null($tier->max_users) ? 'checked' : '' }} onchange="toggleLimitInput('edit_max_users_{{ $tier->id }}', this)">
+                                                            <label class="form-check-label small mb-0" for="edit_unlimited_max_users_{{ $tier->id }}">Infinite</label>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                                 <div class="mb-3">
                                                     <label class="form-label">Max Assets</label>
-                                                    <input type="number" class="form-control bg-secondary bg-opacity-25 text-light border-secondary" name="max_assets" value="{{ $tier->max_assets }}" required min="1">
+                                                    <div class="input-group">
+                                                        <input type="number" class="form-control bg-secondary bg-opacity-25 text-light border-secondary" name="max_assets" id="edit_max_assets_{{ $tier->id }}" value="{{ $tier->max_assets }}" @if(!is_null($tier->max_assets)) required min="1" @else disabled @endif>
+                                                        <div class="input-group-text bg-secondary bg-opacity-25 border-secondary">
+                                                            <input class="form-check-input mt-0 me-1" type="checkbox" name="unlimited_max_assets" id="edit_unlimited_max_assets_{{ $tier->id }}" value="1" {{ is_null($tier->max_assets) ? 'checked' : '' }} onchange="toggleLimitInput('edit_max_assets_{{ $tier->id }}', this)">
+                                                            <label class="form-check-label small mb-0" for="edit_unlimited_max_assets_{{ $tier->id }}">Infinite</label>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                                 <div class="mb-3">
                                                     <label class="form-label">Max Classifications</label>
-                                                    <input type="number" class="form-control bg-secondary bg-opacity-25 text-light border-secondary" name="max_classifications" value="{{ $tier->max_classifications ?? 5 }}" required min="1">
+                                                    <div class="input-group">
+                                                        <input type="number" class="form-control bg-secondary bg-opacity-25 text-light border-secondary" name="max_classifications" id="edit_max_classifications_{{ $tier->id }}" value="{{ $tier->max_classifications }}" @if(!is_null($tier->max_classifications)) required min="1" @else disabled @endif>
+                                                        <div class="input-group-text bg-secondary bg-opacity-25 border-secondary">
+                                                            <input class="form-check-input mt-0 me-1" type="checkbox" name="unlimited_max_classifications" id="edit_unlimited_max_classifications_{{ $tier->id }}" value="1" {{ is_null($tier->max_classifications) ? 'checked' : '' }} onchange="toggleLimitInput('edit_max_classifications_{{ $tier->id }}', this)">
+                                                            <label class="form-check-label small mb-0" for="edit_unlimited_max_classifications_{{ $tier->id }}">Infinite</label>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                                 <div class="mb-3">
                                                     <label class="form-label">Max Accounts</label>
-                                                    <input type="number" class="form-control bg-secondary bg-opacity-25 text-light border-secondary" name="max_accounts" value="{{ $tier->max_accounts ?? 10 }}" required min="1">
+                                                    <div class="input-group">
+                                                        <input type="number" class="form-control bg-secondary bg-opacity-25 text-light border-secondary" name="max_accounts" id="edit_max_accounts_{{ $tier->id }}" value="{{ $tier->max_accounts }}" @if(!is_null($tier->max_accounts)) required min="1" @else disabled @endif>
+                                                        <div class="input-group-text bg-secondary bg-opacity-25 border-secondary">
+                                                            <input class="form-check-input mt-0 me-1" type="checkbox" name="unlimited_max_accounts" id="edit_unlimited_max_accounts_{{ $tier->id }}" value="1" {{ is_null($tier->max_accounts) ? 'checked' : '' }} onchange="toggleLimitInput('edit_max_accounts_{{ $tier->id }}', this)">
+                                                            <label class="form-check-label small mb-0" for="edit_unlimited_max_accounts_{{ $tier->id }}">Infinite</label>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                                 <div class="mb-3">
                                                     <label class="form-label">Max Sub Accounts per Account</label>
-                                                    <input type="number" class="form-control bg-secondary bg-opacity-25 text-light border-secondary" name="max_sub_accounts_per_account" value="{{ $tier->max_sub_accounts_per_account ?? 10 }}" required min="1">
+                                                    <div class="input-group">
+                                                        <input type="number" class="form-control bg-secondary bg-opacity-25 text-light border-secondary" name="max_sub_accounts_per_account" id="edit_max_sub_accounts_per_account_{{ $tier->id }}" value="{{ $tier->max_sub_accounts_per_account }}" @if(!is_null($tier->max_sub_accounts_per_account)) required min="1" @else disabled @endif>
+                                                        <div class="input-group-text bg-secondary bg-opacity-25 border-secondary">
+                                                            <input class="form-check-input mt-0 me-1" type="checkbox" name="unlimited_max_sub_accounts_per_account" id="edit_unlimited_max_sub_accounts_per_account_{{ $tier->id }}" value="1" {{ is_null($tier->max_sub_accounts_per_account) ? 'checked' : '' }} onchange="toggleLimitInput('edit_max_sub_accounts_per_account_{{ $tier->id }}', this)">
+                                                            <label class="form-check-label small mb-0" for="edit_unlimited_max_sub_accounts_per_account_{{ $tier->id }}">Infinite</label>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                                 <div class="form-check form-switch mb-3">
                                                     <input class="form-check-input" type="checkbox" role="switch" id="editReportsEnabled{{ $tier->id }}" name="reports_enabled" value="1" {{ !empty($tier->features['reports']) ? 'checked' : '' }}>
@@ -323,23 +353,53 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Max Users</label>
-                            <input type="number" class="form-control bg-secondary bg-opacity-25 text-light border-secondary" name="max_users" required min="1" placeholder="e.g. 10">
+                            <div class="input-group">
+                                <input type="number" class="form-control bg-secondary bg-opacity-25 text-light border-secondary" name="max_users" id="create_max_users" required min="1" placeholder="e.g. 10">
+                                <div class="input-group-text bg-secondary bg-opacity-25 border-secondary">
+                                    <input class="form-check-input mt-0 me-1" type="checkbox" name="unlimited_max_users" id="create_unlimited_max_users" value="1" onchange="toggleLimitInput('create_max_users', this)">
+                                    <label class="form-check-label small mb-0" for="create_unlimited_max_users">Infinite</label>
+                                </div>
+                            </div>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Max Assets</label>
-                            <input type="number" class="form-control bg-secondary bg-opacity-25 text-light border-secondary" name="max_assets" required min="1" placeholder="e.g. 20">
+                            <div class="input-group">
+                                <input type="number" class="form-control bg-secondary bg-opacity-25 text-light border-secondary" name="max_assets" id="create_max_assets" required min="1" placeholder="e.g. 20">
+                                <div class="input-group-text bg-secondary bg-opacity-25 border-secondary">
+                                    <input class="form-check-input mt-0 me-1" type="checkbox" name="unlimited_max_assets" id="create_unlimited_max_assets" value="1" onchange="toggleLimitInput('create_max_assets', this)">
+                                    <label class="form-check-label small mb-0" for="create_unlimited_max_assets">Infinite</label>
+                                </div>
+                            </div>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Max Classifications</label>
-                            <input type="number" class="form-control bg-secondary bg-opacity-25 text-light border-secondary" name="max_classifications" required min="1" placeholder="e.g. 5">
+                            <div class="input-group">
+                                <input type="number" class="form-control bg-secondary bg-opacity-25 text-light border-secondary" name="max_classifications" id="create_max_classifications" required min="1" placeholder="e.g. 5">
+                                <div class="input-group-text bg-secondary bg-opacity-25 border-secondary">
+                                    <input class="form-check-input mt-0 me-1" type="checkbox" name="unlimited_max_classifications" id="create_unlimited_max_classifications" value="1" onchange="toggleLimitInput('create_max_classifications', this)">
+                                    <label class="form-check-label small mb-0" for="create_unlimited_max_classifications">Infinite</label>
+                                </div>
+                            </div>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Max Accounts</label>
-                            <input type="number" class="form-control bg-secondary bg-opacity-25 text-light border-secondary" name="max_accounts" required min="1" placeholder="e.g. 10">
+                            <div class="input-group">
+                                <input type="number" class="form-control bg-secondary bg-opacity-25 text-light border-secondary" name="max_accounts" id="create_max_accounts" required min="1" placeholder="e.g. 10">
+                                <div class="input-group-text bg-secondary bg-opacity-25 border-secondary">
+                                    <input class="form-check-input mt-0 me-1" type="checkbox" name="unlimited_max_accounts" id="create_unlimited_max_accounts" value="1" onchange="toggleLimitInput('create_max_accounts', this)">
+                                    <label class="form-check-label small mb-0" for="create_unlimited_max_accounts">Infinite</label>
+                                </div>
+                            </div>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Max Sub Accounts per Account</label>
-                            <input type="number" class="form-control bg-secondary bg-opacity-25 text-light border-secondary" name="max_sub_accounts_per_account" required min="1" placeholder="e.g. 10">
+                            <div class="input-group">
+                                <input type="number" class="form-control bg-secondary bg-opacity-25 text-light border-secondary" name="max_sub_accounts_per_account" id="create_max_sub_accounts_per_account" required min="1" placeholder="e.g. 10">
+                                <div class="input-group-text bg-secondary bg-opacity-25 border-secondary">
+                                    <input class="form-check-input mt-0 me-1" type="checkbox" name="unlimited_max_sub_accounts_per_account" id="create_unlimited_max_sub_accounts_per_account" value="1" onchange="toggleLimitInput('create_max_sub_accounts_per_account', this)">
+                                    <label class="form-check-label small mb-0" for="create_unlimited_max_sub_accounts_per_account">Infinite</label>
+                                </div>
+                            </div>
                         </div>
                         <div class="form-check form-switch mb-3">
                             <input class="form-check-input" type="checkbox" role="switch" id="reportsEnabled" name="reports_enabled" value="1">
@@ -354,6 +414,22 @@
             </form>
         </div>
     </div>
+
+    <script>
+        function toggleLimitInput(inputId, checkbox) {
+            const input = document.getElementById(inputId);
+            if (checkbox.checked) {
+                input.disabled = true;
+                input.removeAttribute('required');
+                input.value = '';
+            } else {
+                input.disabled = false;
+                input.setAttribute('required', 'required');
+                input.setAttribute('min', '1');
+                input.focus();
+            }
+        }
+    </script>
 
 </body>
 </html>

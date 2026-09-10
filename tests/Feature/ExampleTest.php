@@ -17,5 +17,9 @@ class ExampleTest extends TestCase
         $response = $this->get('/');
 
         $response->assertStatus(200);
+        $response->assertSee('Standard Plan');
+        $response->assertSee('Enterprise Plan');
+        $response->assertSee('5 Active Users');
+        $response->assertSee('10 Monitored Assets');
     }
 }

@@ -122,21 +122,21 @@ class SuperAdminController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:subscription_tiers,name',
-            'max_users' => 'required|integer|min:1',
-            'max_assets' => 'required|integer|min:1',
-            'max_classifications' => 'required|integer|min:1',
-            'max_accounts' => 'required|integer|min:1',
-            'max_sub_accounts_per_account' => 'required|integer|min:1',
+            'max_users' => 'nullable|required_without:unlimited_max_users|integer|min:1',
+            'max_assets' => 'nullable|required_without:unlimited_max_assets|integer|min:1',
+            'max_classifications' => 'nullable|required_without:unlimited_max_classifications|integer|min:1',
+            'max_accounts' => 'nullable|required_without:unlimited_max_accounts|integer|min:1',
+            'max_sub_accounts_per_account' => 'nullable|required_without:unlimited_max_sub_accounts_per_account|integer|min:1',
             'reports_enabled' => 'nullable|boolean',
         ]);
 
         SubscriptionTier::create([
             'name' => $validated['name'],
-            'max_users' => $validated['max_users'],
-            'max_assets' => $validated['max_assets'],
-            'max_classifications' => $validated['max_classifications'],
-            'max_accounts' => $validated['max_accounts'],
-            'max_sub_accounts_per_account' => $validated['max_sub_accounts_per_account'],
+            'max_users' => $request->has('unlimited_max_users') ? null : $validated['max_users'],
+            'max_assets' => $request->has('unlimited_max_assets') ? null : $validated['max_assets'],
+            'max_classifications' => $request->has('unlimited_max_classifications') ? null : $validated['max_classifications'],
+            'max_accounts' => $request->has('unlimited_max_accounts') ? null : $validated['max_accounts'],
+            'max_sub_accounts_per_account' => $request->has('unlimited_max_sub_accounts_per_account') ? null : $validated['max_sub_accounts_per_account'],
             'features' => [
                 'reports' => ! empty($validated['reports_enabled']),
             ],
@@ -151,20 +151,20 @@ class SuperAdminController extends Controller
     public function updateTier(Request $request, SubscriptionTier $tier): RedirectResponse
     {
         $validated = $request->validate([
-            'max_users' => 'required|integer|min:1',
-            'max_assets' => 'required|integer|min:1',
-            'max_classifications' => 'required|integer|min:1',
-            'max_accounts' => 'required|integer|min:1',
-            'max_sub_accounts_per_account' => 'required|integer|min:1',
+            'max_users' => 'nullable|required_without:unlimited_max_users|integer|min:1',
+            'max_assets' => 'nullable|required_without:unlimited_max_assets|integer|min:1',
+            'max_classifications' => 'nullable|required_without:unlimited_max_classifications|integer|min:1',
+            'max_accounts' => 'nullable|required_without:unlimited_max_accounts|integer|min:1',
+            'max_sub_accounts_per_account' => 'nullable|required_without:unlimited_max_sub_accounts_per_account|integer|min:1',
             'reports_enabled' => 'nullable|boolean',
         ]);
 
         $tier->update([
-            'max_users' => $validated['max_users'],
-            'max_assets' => $validated['max_assets'],
-            'max_classifications' => $validated['max_classifications'],
-            'max_accounts' => $validated['max_accounts'],
-            'max_sub_accounts_per_account' => $validated['max_sub_accounts_per_account'],
+            'max_users' => $request->has('unlimited_max_users') ? null : $validated['max_users'],
+            'max_assets' => $request->has('unlimited_max_assets') ? null : $validated['max_assets'],
+            'max_classifications' => $request->has('unlimited_max_classifications') ? null : $validated['max_classifications'],
+            'max_accounts' => $request->has('unlimited_max_accounts') ? null : $validated['max_accounts'],
+            'max_sub_accounts_per_account' => $request->has('unlimited_max_sub_accounts_per_account') ? null : $validated['max_sub_accounts_per_account'],
             'features' => [
                 'reports' => ! empty($validated['reports_enabled']),
             ],

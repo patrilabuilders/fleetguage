@@ -35,7 +35,29 @@ Route::prefix('super-admin')->group(function () {
 });
 
 Route::get('/', function () {
-    return view('welcome');
+    $tiers = \App\Models\SubscriptionTier::all();
+    if ($tiers->isEmpty()) {
+        \App\Models\SubscriptionTier::create([
+            'name' => 'Standard',
+            'max_users' => 5,
+            'max_assets' => 10,
+            'max_classifications' => 5,
+            'max_accounts' => 10,
+            'max_sub_accounts_per_account' => 10,
+            'features' => ['reports' => false],
+        ]);
+        \App\Models\SubscriptionTier::create([
+            'name' => 'Enterprise',
+            'max_users' => 100,
+            'max_assets' => 1000,
+            'max_classifications' => 100,
+            'max_accounts' => 200,
+            'max_sub_accounts_per_account' => 500,
+            'features' => ['reports' => true],
+        ]);
+        $tiers = \App\Models\SubscriptionTier::all();
+    }
+    return view('welcome', compact('tiers'));
 });
 
 Route::get('/dashboard', [ReportController::class, 'accountBudgetDashboard'])

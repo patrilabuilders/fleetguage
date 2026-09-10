@@ -20,7 +20,7 @@
             <!-- Subscription Tier Interactive Selector -->
             <div class="mb-3">
                 <x-input-label :value="__('Select Subscription Tier')" class="text-secondary small fw-bold text-uppercase tracking-widest ms-1 mb-2" />
-                <input type="hidden" name="subscription_tier_id" id="subscription_tier_id" value="{{ old('subscription_tier_id', $tiers->first()?->id ?? '') }}">
+                <input type="hidden" name="subscription_tier_id" id="subscription_tier_id" value="{{ old('subscription_tier_id', request('tier_id', request('subscription_tier_id', $tiers->first()?->id ?? ''))) }}">
                 
                 <div class="row g-2">
                     @foreach($tiers as $tier)
@@ -31,8 +31,8 @@
                                  style="cursor: pointer; transition: all 0.2s ease-in-out;">
                                 <div class="fw-bold text-light mb-1">{{ $tier->name }}</div>
                                 <div class="text-secondary mb-2" style="font-size: 0.75rem;">
-                                    Max {{ $tier->max_users }} Users<br>
-                                    Max {{ $tier->max_assets }} Assets
+                                    Max {{ $tier->max_users ?? 'Infinite' }} Users<br>
+                                    Max {{ $tier->max_assets ?? 'Infinite' }} Assets
                                 </div>
                                 <div class="badge bg-secondary bg-opacity-25 text-light select-badge" style="font-size: 0.65rem;">Select</div>
                             </div>

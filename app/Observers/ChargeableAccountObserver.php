@@ -18,12 +18,14 @@ class ChargeableAccountObserver
         if ($companyId) {
             $company = Company::with('subscriptionTier')->find($companyId);
             if ($company && $company->subscriptionTier) {
-                $maxAccounts = $company->subscriptionTier->max_accounts ?? 10;
-                $currentCount = ChargeableAccount::withoutGlobalScopes()->where('company_id', $companyId)->count();
-                if ($currentCount >= $maxAccounts) {
-                    throw ValidationException::withMessages([
-                        'name' => ["Your subscription tier limits the number of accounts to {$maxAccounts}. Please upgrade to Enterprise."],
-                    ]);
+                $maxAccounts = $company->subscriptionTier->max_accounts;
+                if ($maxAccounts !== null) {
+                    $currentCount = ChargeableAccount::withoutGlobalScopes()->where('company_id', $companyId)->count();
+                    if ($currentCount >= $maxAccounts) {
+                        throw ValidationException::withMessages([
+                            'name' => ["Your subscription tier limits the number of accounts to {$maxAccounts}. Please upgrade to Enterprise."],
+                        ]);
+                    }
                 }
             }
         }

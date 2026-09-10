@@ -18,12 +18,14 @@ class AssetTypeObserver
         if ($companyId) {
             $company = Company::with('subscriptionTier')->find($companyId);
             if ($company && $company->subscriptionTier) {
-                $maxClassifications = $company->subscriptionTier->max_classifications ?? 5;
-                $currentCount = AssetType::withoutGlobalScopes()->where('company_id', $companyId)->count();
-                if ($currentCount >= $maxClassifications) {
-                    throw ValidationException::withMessages([
-                        'name' => ["Your subscription tier limits the number of classifications to {$maxClassifications}. Please upgrade to Enterprise."],
-                    ]);
+                $maxClassifications = $company->subscriptionTier->max_classifications;
+                if ($maxClassifications !== null) {
+                    $currentCount = AssetType::withoutGlobalScopes()->where('company_id', $companyId)->count();
+                    if ($currentCount >= $maxClassifications) {
+                        throw ValidationException::withMessages([
+                            'name' => ["Your subscription tier limits the number of classifications to {$maxClassifications}. Please upgrade to Enterprise."],
+                        ]);
+                    }
                 }
             }
         }

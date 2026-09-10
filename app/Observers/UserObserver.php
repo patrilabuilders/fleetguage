@@ -19,11 +19,13 @@ class UserObserver
             $company = Company::with('subscriptionTier')->find($companyId);
             if ($company && $company->subscriptionTier) {
                 $maxUsers = $company->subscriptionTier->max_users;
-                $currentUsersCount = User::withoutGlobalScopes()->where('company_id', $companyId)->count();
-                if ($currentUsersCount >= $maxUsers) {
-                    throw ValidationException::withMessages([
-                        'email' => ["Your subscription tier limits the number of users to {$maxUsers}. Please upgrade to Enterprise."],
-                    ]);
+                if ($maxUsers !== null) {
+                    $currentUsersCount = User::withoutGlobalScopes()->where('company_id', $companyId)->count();
+                    if ($currentUsersCount >= $maxUsers) {
+                        throw ValidationException::withMessages([
+                            'email' => ["Your subscription tier limits the number of users to {$maxUsers}. Please upgrade to Enterprise."],
+                        ]);
+                    }
                 }
             }
         }
