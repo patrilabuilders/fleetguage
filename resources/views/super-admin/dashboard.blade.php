@@ -225,7 +225,7 @@
                                                 <div class="mb-3">
                                                     <label class="form-label">Price ($ / month)</label>
                                                     <div class="input-group">
-                                                        <input type="number" step="0.01" class="form-control bg-secondary bg-opacity-25 text-light border-secondary" name="price" id="edit_price_{{ $tier->id }}" value="{{ $tier->price }}" @if(!is_null($tier->price) && $tier->price > 0) required min="0" @else disabled @endif placeholder="e.g. 49.00">
+                                                        <input type="number" step="0.01" class="form-control bg-secondary bg-opacity-25 text-light border-secondary" name="price" id="edit_price_{{ $tier->id }}" value="{{ $tier->price }}" @if($tier->price === 0.0 || $tier->price === 0) disabled @else required min="0" @endif placeholder="e.g. 49.00">
                                                         <div class="input-group-text bg-secondary bg-opacity-25 border-secondary">
                                                             <input class="form-check-input mt-0 me-1" type="checkbox" name="is_free" id="edit_is_free_{{ $tier->id }}" value="1" {{ ($tier->price === 0.0 || $tier->price === 0) ? 'checked' : '' }} onchange="togglePriceInput('edit_price_{{ $tier->id }}', this)">
                                                             <label class="form-check-label small mb-0" for="edit_is_free_{{ $tier->id }}">Free</label>
