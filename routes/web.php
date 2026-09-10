@@ -39,6 +39,8 @@ Route::get('/', function () {
     if ($tiers->isEmpty()) {
         \App\Models\SubscriptionTier::create([
             'name' => 'Standard',
+            'price' => 49.00,
+            'description' => 'Perfect for regional construction sites or single-depot logistics hubs.',
             'max_users' => 5,
             'max_assets' => 10,
             'max_classifications' => 5,
@@ -48,6 +50,8 @@ Route::get('/', function () {
         ]);
         \App\Models\SubscriptionTier::create([
             'name' => 'Enterprise',
+            'price' => 299.00,
+            'description' => 'Complete solution for industrial operations, mining networks, and national shipping fleets.',
             'max_users' => 100,
             'max_assets' => 1000,
             'max_classifications' => 100,

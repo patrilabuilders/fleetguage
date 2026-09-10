@@ -367,17 +367,23 @@
                     @foreach($tiers as $tier)
                         @php
                             $isEnterprise = str_contains(strtolower($tier->name), 'enterprise');
-                            $price = match(strtolower($tier->name)) {
-                                'standard' => '$49',
-                                'enterprise' => '$299',
-                                default => !empty($tier->features['reports']) ? '$149' : '$79',
+                            
+                            // Use database values if set, otherwise fallback to default prices for backward compatibility
+                            $priceVal = !is_null($tier->price) ? $tier->price : match(strtolower($tier->name)) {
+                                'standard' => 49.00,
+                                'enterprise' => 299.00,
+                                default => !empty($tier->features['reports']) ? 149.00 : 79.00,
                             };
+                            
+                            $priceText = $priceVal == 0 ? 'Free' : '$' . number_format($priceVal, 0);
+                            
                             $subTitle = match(strtolower($tier->name)) {
                                 'standard' => 'SME Essential',
                                 'enterprise' => 'Popular',
                                 default => 'Custom Tier',
                             };
-                            $desc = match(strtolower($tier->name)) {
+                            
+                            $desc = $tier->description ?: match(strtolower($tier->name)) {
                                 'standard' => 'Perfect for regional construction sites or single-depot logistics hubs.',
                                 'enterprise' => 'Complete solution for industrial operations, mining networks, and national shipping fleets.',
                                 default => 'Tailored features to match your exact business requirements.',
@@ -392,7 +398,12 @@
                                     </span>
                                 </div>
                                 <p class="text-secondary small mb-4">{{ $desc }}</p>
-                                <h2 class="fw-black text-white mb-4">{{ $price }}<span class="fs-5 text-secondary fw-normal">/month</span></h2>
+                                <h2 class="fw-black text-white mb-4">
+                                    {{ $priceText }}
+                                    @if($priceVal > 0)
+                                        <span class="fs-5 text-secondary fw-normal">/month</span>
+                                    @endif
+                                </h2>
                                 
                                 <ul class="list-unstyled mb-5 vstack gap-3 text-secondary" style="font-size: 0.9rem;">
                                     <li class="d-flex align-items-center gap-2">

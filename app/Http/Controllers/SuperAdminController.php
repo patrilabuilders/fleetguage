@@ -122,6 +122,8 @@ class SuperAdminController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:subscription_tiers,name',
+            'price' => 'nullable|required_without:is_free|numeric|min:0',
+            'description' => 'nullable|string',
             'max_users' => 'nullable|required_without:unlimited_max_users|integer|min:1',
             'max_assets' => 'nullable|required_without:unlimited_max_assets|integer|min:1',
             'max_classifications' => 'nullable|required_without:unlimited_max_classifications|integer|min:1',
@@ -132,6 +134,8 @@ class SuperAdminController extends Controller
 
         SubscriptionTier::create([
             'name' => $validated['name'],
+            'price' => $request->has('is_free') ? 0.00 : $validated['price'],
+            'description' => $validated['description'],
             'max_users' => $request->has('unlimited_max_users') ? null : $validated['max_users'],
             'max_assets' => $request->has('unlimited_max_assets') ? null : $validated['max_assets'],
             'max_classifications' => $request->has('unlimited_max_classifications') ? null : $validated['max_classifications'],
@@ -151,6 +155,8 @@ class SuperAdminController extends Controller
     public function updateTier(Request $request, SubscriptionTier $tier): RedirectResponse
     {
         $validated = $request->validate([
+            'price' => 'nullable|required_without:is_free|numeric|min:0',
+            'description' => 'nullable|string',
             'max_users' => 'nullable|required_without:unlimited_max_users|integer|min:1',
             'max_assets' => 'nullable|required_without:unlimited_max_assets|integer|min:1',
             'max_classifications' => 'nullable|required_without:unlimited_max_classifications|integer|min:1',
@@ -160,6 +166,8 @@ class SuperAdminController extends Controller
         ]);
 
         $tier->update([
+            'price' => $request->has('is_free') ? 0.00 : $validated['price'],
+            'description' => $validated['description'],
             'max_users' => $request->has('unlimited_max_users') ? null : $validated['max_users'],
             'max_assets' => $request->has('unlimited_max_assets') ? null : $validated['max_assets'],
             'max_classifications' => $request->has('unlimited_max_classifications') ? null : $validated['max_classifications'],

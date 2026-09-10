@@ -12,6 +12,8 @@ class SubscriptionTier extends Model
 
     protected $fillable = [
         'name',
+        'price',
+        'description',
         'max_users',
         'max_assets',
         'max_classifications',
@@ -29,6 +31,7 @@ class SubscriptionTier extends Model
     {
         return [
             'features' => 'array',
+            'price' => 'float',
             'max_users' => 'integer',
             'max_assets' => 'integer',
             'max_classifications' => 'integer',

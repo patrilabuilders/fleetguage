@@ -338,9 +338,11 @@ class SubscriptionTierLimitsTest extends TestCase
 
         $this->actingAs($admin, 'admin');
 
-        // Create tier with infinite limits
+        // Create tier with infinite limits and is_free
         $response = $this->post(route('super-admin.tiers.store'), [
             'name' => 'Super Infinite Tier',
+            'is_free' => '1',
+            'description' => 'Completely Free and Unlimited!',
             'unlimited_max_users' => '1',
             'unlimited_max_assets' => '1',
             'unlimited_max_classifications' => '1',
@@ -352,6 +354,8 @@ class SubscriptionTierLimitsTest extends TestCase
         $response->assertRedirect(route('super-admin.dashboard'));
         $this->assertDatabaseHas('subscription_tiers', [
             'name' => 'Super Infinite Tier',
+            'price' => 0.00,
+            'description' => 'Completely Free and Unlimited!',
             'max_users' => null,
             'max_assets' => null,
             'max_classifications' => null,
@@ -361,8 +365,10 @@ class SubscriptionTierLimitsTest extends TestCase
 
         $tier = SubscriptionTier::where('name', 'Super Infinite Tier')->first();
 
-        // Update tier back to finite limits, and then to a mix of both
+        // Update tier back to finite limits, custom price, description, and then to a mix of both
         $response2 = $this->patch(route('super-admin.tiers.update', $tier->id), [
+            'price' => 19.99,
+            'description' => 'A beautifully updated custom tier.',
             'max_users' => 20,
             'unlimited_max_assets' => '1',
             'max_classifications' => 15,
@@ -374,6 +380,8 @@ class SubscriptionTierLimitsTest extends TestCase
         $response2->assertRedirect(route('super-admin.dashboard'));
         $this->assertDatabaseHas('subscription_tiers', [
             'id' => $tier->id,
+            'price' => 19.99,
+            'description' => 'A beautifully updated custom tier.',
             'max_users' => 20,
             'max_assets' => null,
             'max_classifications' => 15,

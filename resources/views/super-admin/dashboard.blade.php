@@ -185,6 +185,14 @@
                                         </button>
                                     </div>
                                     <div class="row text-secondary g-2" style="font-size: 0.9rem;">
+                                        <div class="col-12 mb-1">
+                                            Price: <strong class="text-light">{{ !is_null($tier->price) ? ($tier->price == 0 ? 'Free' : '$' . number_format($tier->price, 2)) : 'Not set' }}</strong>
+                                        </div>
+                                        @if($tier->description)
+                                            <div class="col-12 mb-2 small text-secondary">
+                                                <em>{{ $tier->description }}</em>
+                                            </div>
+                                        @endif
                                         <div class="col-6">Max Users: <strong class="text-light">{{ $tier->max_users ?? 'Infinite' }}</strong></div>
                                         <div class="col-6">Max Assets: <strong class="text-light">{{ $tier->max_assets ?? 'Infinite' }}</strong></div>
                                         <div class="col-6">Max Classifications: <strong class="text-light">{{ $tier->max_classifications ?? 'Infinite' }}</strong></div>
@@ -214,6 +222,20 @@
                                                 <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Price ($ / month)</label>
+                                                    <div class="input-group">
+                                                        <input type="number" step="0.01" class="form-control bg-secondary bg-opacity-25 text-light border-secondary" name="price" id="edit_price_{{ $tier->id }}" value="{{ $tier->price }}" @if(!is_null($tier->price) && $tier->price > 0) required min="0" @else disabled @endif placeholder="e.g. 49.00">
+                                                        <div class="input-group-text bg-secondary bg-opacity-25 border-secondary">
+                                                            <input class="form-check-input mt-0 me-1" type="checkbox" name="is_free" id="edit_is_free_{{ $tier->id }}" value="1" {{ ($tier->price === 0.0 || $tier->price === 0) ? 'checked' : '' }} onchange="togglePriceInput('edit_price_{{ $tier->id }}', this)">
+                                                            <label class="form-check-label small mb-0" for="edit_is_free_{{ $tier->id }}">Free</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Description</label>
+                                                    <textarea class="form-control bg-secondary bg-opacity-25 text-light border-secondary" name="description" rows="2" placeholder="Describe this tier's key value proposition...">{{ $tier->description }}</textarea>
+                                                </div>
                                                 <div class="mb-3">
                                                     <label class="form-label">Max Users</label>
                                                     <div class="input-group">
@@ -352,6 +374,20 @@
                             <input type="text" class="form-control bg-secondary bg-opacity-25 text-light border-secondary" name="name" required placeholder="e.g. Professional">
                         </div>
                         <div class="mb-3">
+                            <label class="form-label">Price ($ / month)</label>
+                            <div class="input-group">
+                                <input type="number" step="0.01" class="form-control bg-secondary bg-opacity-25 text-light border-secondary" name="price" id="create_price" required min="0" placeholder="e.g. 49.00">
+                                <div class="input-group-text bg-secondary bg-opacity-25 border-secondary">
+                                    <input class="form-check-input mt-0 me-1" type="checkbox" name="is_free" id="create_is_free" value="1" onchange="togglePriceInput('create_price', this)">
+                                    <label class="form-check-label small mb-0" for="create_is_free">Free</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-control bg-secondary bg-opacity-25 text-light border-secondary" name="description" rows="2" placeholder="Describe this tier's key value proposition..."></textarea>
+                        </div>
+                        <div class="mb-3">
                             <label class="form-label">Max Users</label>
                             <div class="input-group">
                                 <input type="number" class="form-control bg-secondary bg-opacity-25 text-light border-secondary" name="max_users" id="create_max_users" required min="1" placeholder="e.g. 10">
@@ -426,6 +462,20 @@
                 input.disabled = false;
                 input.setAttribute('required', 'required');
                 input.setAttribute('min', '1');
+                input.focus();
+            }
+        }
+
+        function togglePriceInput(inputId, checkbox) {
+            const input = document.getElementById(inputId);
+            if (checkbox.checked) {
+                input.disabled = true;
+                input.removeAttribute('required');
+                input.value = '';
+            } else {
+                input.disabled = false;
+                input.setAttribute('required', 'required');
+                input.setAttribute('min', '0');
                 input.focus();
             }
         }
